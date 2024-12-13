@@ -50,7 +50,7 @@ export default function AddEditCourse() {
     if (action === "edit-course" && id && id !== "null") {
       setIsLoading(true);
       axios
-        .get(`http://localhost:4100/admin/course/${id}`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/admin/course/${id}`, {
           headers: { Authorization: `${token}` },
         })
         .then((response) => setForm(response.data.data.courses))

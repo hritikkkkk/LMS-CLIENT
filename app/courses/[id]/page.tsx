@@ -52,7 +52,7 @@ export default function CourseDetails() {
         }
 
         const courseResponse = await axios.get(
-          `http://localhost:4100/admin/course/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/admin/course/${id}`,
           {
             headers: {
               Authorization: `${token}`,
@@ -63,7 +63,7 @@ export default function CourseDetails() {
 
         // Check if the user is already enrolled
         const enrollmentResponse = await axios.get(
-          `http://localhost:4100/users/check-enrollment`,
+          `${process.env.NEXT_PUBLIC_API_URL}/users/check-enrollment`,
           {
             params: { userId, courseId: id },
             headers: { Authorization: `${token}` },
