@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { jwtDecode } from "jwt-decode";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Course {
   _id: string;
@@ -58,6 +59,7 @@ export interface jwtPayload {
 export default function AdminDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -85,6 +87,7 @@ export default function AdminDashboard() {
   }, [router]);
 
   const fetchCourses = async (token: string) => {
+    setIsLoading(true);
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/admin/adminCourses`,
@@ -100,6 +103,8 @@ export default function AdminDashboard() {
         description: "Failed to fetch courses. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -136,6 +141,26 @@ export default function AdminDashboard() {
       });
     }
   };
+
+  const SkeletonRow = () => (
+    <TableRow>
+      <TableCell>
+        <Skeleton className="h-6 w-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-12 ml-auto" />
+      </TableCell>
+    </TableRow>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -174,7 +199,13 @@ export default function AdminDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCourses.length > 0 ? (
+                {isLoading ? (
+                  <>
+                    <SkeletonRow />
+                    <SkeletonRow />
+                    <SkeletonRow />
+                  </>
+                ) : filteredCourses.length > 0 ? (
                   filteredCourses.map((course) => (
                     <TableRow key={course._id}>
                       <TableCell className="font-medium">
